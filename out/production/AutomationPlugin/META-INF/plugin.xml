@@ -5,7 +5,6 @@
     <vendor email="ronen4822@gmail.com">RE</vendor>
 
     <depends>com.intellij.modules.python</depends>
-    <idea-version since-build="173.0"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -20,7 +19,8 @@
         <group id="AutomationPlugin.SampleMenu" text="_RE" description="SkeletonGenerator">
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="SkeletonGenerator.SkeletonGenerator" class="SkeletonGenerator.SkeletonRefresher" text="_Generate Skeletons"
-                    description="A test menu item"/>
+                    description="Generates and copies skeletons"/>
+            <action id="SkeletonGenerator.SkeletonPathChanger" class="SkeletonGenerator.SkeletonPathChanger" text="Change python-dds-wrapper path"/>
         </group>
     </actions>
 
