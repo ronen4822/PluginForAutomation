@@ -20,7 +20,7 @@
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="SkeletonGenerator.SkeletonGenerator" class="SkeletonGenerator.SkeletonRefresher" text="_Generate Skeletons"
                     description="Generates and copies skeletons"/>
-            <action id="SkeletonGenerator.SkeletonPathChanger" class="SkeletonGenerator.SkeletonPathChanger" text="Change python-dds-wrapper path"/>
+            <action id="SkeletonGenerator.SkeletonPathChanger" class="SkeletonGenerator.SkeletonPathChanger" text="_Change python-dds-wrapper path"/>
         </group>
     </actions>
 
