@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java" line="153" />
+    <bookmark url="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java" line="161" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3de73487-4426-452a-9275-4d8cfb0a5c47" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AutomationPlugin/META-INF/plugin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AutomationPlugin/META-INF/plugin.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PluginForInstallation/AutomationPlugin.jar" beforeDir="false" afterPath="$PROJECT_DIR$/PluginForInstallation/AutomationPlugin.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher$2.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AutomationPlugin/SkeletonGenerator/SkeletonRefresher.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SkeletonGenerator/SkeletonPathChanger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SkeletonGenerator/SkeletonPathChanger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java" afterDir="false" />
@@ -24,14 +25,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1809">
-              <caret line="181" column="21" selection-start-line="181" selection-start-column="21" selection-end-line="181" selection-end-column="21" />
+            <state relative-caret-position="124">
+              <caret line="169" column="46" lean-forward="true" selection-start-line="169" selection-start-column="46" selection-end-line="169" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#countDirs#0;class#SkeletonRefresher#0" />
-                <element signature="e#3719#3727#0" expanded="true" />
-                <element signature="e#4163#4164#0" expanded="true" />
-                <element signature="e#4226#4227#0" expanded="true" />
+                <element signature="e#1193#1194#0" expanded="true" />
+                <element signature="e#1235#1236#0" expanded="true" />
+                <element signature="e#1290#1291#0" expanded="true" />
+                <element signature="e#1344#1345#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -40,8 +41,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonPathChanger.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+            <state relative-caret-position="306">
+              <caret line="18" column="59" lean-forward="true" selection-start-line="18" selection-start-column="59" selection-end-line="18" selection-end-column="59" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -53,7 +54,7 @@
         <entry file="file://$PROJECT_DIR$/resources/META-INF/plugin.xml">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
-              <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+              <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -76,6 +77,7 @@
       <find>python</find>
       <find>update</find>
       <find>PySkeletonRefresher</find>
+      <find>xcopy</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -100,8 +102,8 @@
     <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="464" />
-    <option name="y" value="4" />
+    <option name="x" value="79" />
+    <option name="y" value="-18" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -111,7 +113,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -155,10 +156,11 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552687839758" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1552737873090" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../intellij-community" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
@@ -211,23 +213,23 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1928" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info id="Designer" order="0" />
       <window_info id="UI Designer" order="1" />
       <window_info id="Capture Tool" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
       <window_info id="Image Layers" order="4" />
-      <window_info content_ui="combo" id="Project" order="5" visible="true" weight="0.18176973" />
+      <window_info content_ui="combo" id="Project" order="5" visible="true" weight="0.18550107" />
       <window_info id="Structure" order="6" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="0" />
-      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5010661" side_tool="true" visible="true" weight="0.3997833" />
+      <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.5042644" side_tool="true" visible="true" weight="0.37486458" />
       <window_info anchor="bottom" id="Messages" order="2" weight="0.32936078" />
       <window_info anchor="bottom" id="Version Control" order="3" />
       <window_info anchor="bottom" id="Message" order="4" />
       <window_info anchor="bottom" id="Find" order="5" />
-      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.4989339" weight="0.32936078" />
-      <window_info anchor="bottom" id="Debug" order="7" sideWeight="0.49946696" weight="0.3997833" />
+      <window_info anchor="bottom" id="Run" order="6" sideWeight="0.49573562" weight="0.34994584" />
+      <window_info anchor="bottom" id="Debug" order="7" sideWeight="0.4978678" weight="0.37486458" />
       <window_info anchor="bottom" id="Cvs" order="8" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="9" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="10" />
@@ -243,6 +245,31 @@
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>pathOfPyd.getAbsolutePath()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>pathOfPyd.getAbsolutePath()Path()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>pathOfPyd.getPath()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>currentSdk.getName()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>currentSdk.getHomePath()</expression-string>
+        <language-id>JAVA</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>System.getenv(&quot;Path&quot;)</expression-string>
         <language-id>JAVA</language-id>
@@ -416,13 +443,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/META-INF/plugin.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="13" lean-forward="true" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../intellij-community/python/src/com/jetbrains/python/sdk/skeletons/PySkeletonRefresher.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="146">
@@ -480,10 +500,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../intellij-community/platform/projectModel-api/src/com/intellij/openapi/projectRoots/SdkAdditionalData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="20" column="17" selection-start-line="20" selection-start-column="17" selection-end-line="20" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/META-INF/plugin.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="13" selection-start-line="17" selection-start-column="13" selection-end-line="17" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonPathChanger.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="5" lean-forward="true" selection-start-line="16" selection-start-column="5" selection-end-line="16" selection-end-column="5" />
+        <state relative-caret-position="306">
+          <caret line="18" column="59" lean-forward="true" selection-start-line="18" selection-start-column="59" selection-end-line="18" selection-end-column="59" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -492,14 +526,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SkeletonGenerator/SkeletonRefresher.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1809">
-          <caret line="181" column="21" selection-start-line="181" selection-start-column="21" selection-end-line="181" selection-end-column="21" />
+        <state relative-caret-position="124">
+          <caret line="169" column="46" lean-forward="true" selection-start-line="169" selection-start-column="46" selection-end-line="169" selection-end-column="46" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#countDirs#0;class#SkeletonRefresher#0" />
-            <element signature="e#3719#3727#0" expanded="true" />
-            <element signature="e#4163#4164#0" expanded="true" />
-            <element signature="e#4226#4227#0" expanded="true" />
+            <element signature="e#1193#1194#0" expanded="true" />
+            <element signature="e#1235#1236#0" expanded="true" />
+            <element signature="e#1290#1291#0" expanded="true" />
+            <element signature="e#1344#1345#0" expanded="true" />
           </folding>
         </state>
       </provider>

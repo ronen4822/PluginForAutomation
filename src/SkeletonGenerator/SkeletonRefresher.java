@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.jetbrains.python.sdk.InvalidSdkException;
 import org.jetbrains.annotations.NotNull;
 import com.jetbrains.python.sdk.skeletons.PySkeletonRefresher;
@@ -21,14 +22,13 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.List;
 import java.util.Vector;
 
 public class SkeletonRefresher extends AnAction {
     private static String m_path_for_skeleton_to_copy = "C:\\git\\PythonDdsWrapper";
-    static Boolean is_generating = false;
-    static Object sync_object = new Object();
+    static Boolean isGenerating = false;
+    static final Object SYNC_OBJECT = new Object();
 
     public SkeletonRefresher() {
         super("SkeletonRefresher");
@@ -50,11 +50,11 @@ public class SkeletonRefresher extends AnAction {
     //this is a sudanichka method for finding the actual stubs location
     private int countDirs(File curDir) {
         int dirCount = 0;
-        File[] files_in_dir = curDir.listFiles();
-        if (files_in_dir == null)
+        File[] filesInDir = curDir.listFiles();
+        if (filesInDir == null)
             return 0;
-        for (File cur_file : files_in_dir)
-            if (cur_file.isDirectory())
+        for (File curFile : filesInDir)
+            if (curFile.isDirectory())
                 dirCount++;
         return dirCount;
     }
@@ -62,7 +62,7 @@ public class SkeletonRefresher extends AnAction {
     private Vector<String> getGeneratedSkeletonsPathByRegex(Vector<String> pycharm_dirs) throws IOException {
         String regex = "(?s)PyCharm.*(/system/python_stubs/-?[0-9]+)";
         Pattern ptrn = Pattern.compile(regex);
-        Vector<String> skeleton_paths = new Vector<>();
+        Vector<String> skeletonPaths = new Vector<>();
         for (String path : pycharm_dirs) {
             String tablePath = path + "\\config\\options\\jdk.table.xml";
             File currentFile = new File(tablePath);
@@ -72,24 +72,24 @@ public class SkeletonRefresher extends AnAction {
             Matcher matches = ptrn.matcher(current_string);
             if (matches.find() && matches.groupCount() == 1) {
                 String currentMatch = path + matches.group(1);
-                skeleton_paths.add(currentMatch.replace('/','\\'));
+                skeletonPaths.add(currentMatch.replace('/','\\'));
             }
         }
-        return skeleton_paths;
+        return skeletonPaths;
     }
 
     private Vector<String> getGeneratedSkeletonsPathByDirCount(Vector<String> stub_paths) {
-        Vector<String> paths_of_skeletons = new Vector<>();
-        for (String stub_path : stub_paths) {
-            File f = new File(stub_path);
-            File[] inner_directories = f.listFiles();
-            if (inner_directories == null)
+        Vector<String> pathsOfSkeletons = new Vector<>();
+        for (String stubPath : stub_paths) {
+            File f = new File(stubPath);
+            File[] innerDirectories = f.listFiles();
+            if (innerDirectories == null)
                 continue;
-            for (File stub_dir : inner_directories)
-                if (countDirs(stub_dir) > 10)//random number to filter the actual skeleton dir
-                    paths_of_skeletons.add(stub_dir.getAbsolutePath());
+            for (File stubDir : innerDirectories)
+                if (countDirs(stubDir) > 10)//random number to filter the actual skeleton dir
+                    pathsOfSkeletons.add(stubDir.getAbsolutePath());
         }
-        return paths_of_skeletons;
+        return pathsOfSkeletons;
     }
 
     private Vector<String> unionVectors(Vector<String> vec1, Vector<String> vec2) {
@@ -97,67 +97,76 @@ public class SkeletonRefresher extends AnAction {
             return vec2;
         if (vec2 == null || vec2.size() == 0)
             return vec1;
-        TreeSet<String> hashedArray = new TreeSet<String>();
+        TreeSet<String> hashedArray = new TreeSet<>();
         hashedArray.addAll(vec1);
         hashedArray.addAll(vec2);
         String[] unifiedObjects = hashedArray.toArray(new String[0]);
-        return new Vector<String>(Arrays.asList(unifiedObjects));
+        return new Vector<>(Arrays.asList(unifiedObjects));
+    }
+
+    private void copyPydToSitePackagesDir(Sdk currentSdk) throws Exception {
+        VirtualFile sdkHome = currentSdk.getHomeDirectory();
+        if (sdkHome == null)
+            throw new Exception(String.format("Failed to locate sdk home dir : %s",currentSdk.getName()));
+        File sitePackagesFile=new File(sdkHome.getParent().getPath() + "\\Lib\\site-packages");
+        File pathOfPyd = new File(m_path_for_skeleton_to_copy + "\\CompiledFiles\\Pyd");
+        if (!sitePackagesFile.exists())
+            throw new Exception(String.format("Cannot find dir: %s",sitePackagesFile.getAbsolutePath()));
+        if (!pathOfPyd.exists())
+            throw new Exception(String.format("Cannot find dir %s",pathOfPyd.getAbsolutePath()));
+        runCmdCommand(String.format("xcopy %s %s /E /Y", pathOfPyd.getAbsolutePath(), sitePackagesFile.getAbsolutePath()), null);
     }
 
 
     private Vector<String> getGeneratedSkeletonsPath() {
         File dir = new File(System.getProperty("user.home"));
-        File[] py_charm_dirs = dir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.contains("PyCharm");
-            }
-        });
-
-        Vector<String> paths_to_stubs = new Vector<>();
-        Vector<String> paths_to_pycharm = new Vector<>();
-        if (py_charm_dirs == null)
+        File[] pyCharmDirs = dir.listFiles((dir1, name) -> name.contains("PyCharm"));
+        Vector<String> pathsToStubs = new Vector<>();
+        Vector<String> pathsToPycharm = new Vector<>();
+        if (pyCharmDirs == null)
             return null;
-        for (File py_charm_dir : py_charm_dirs)
-            if (py_charm_dir.isDirectory()) {
-                paths_to_stubs.add(py_charm_dir.getAbsolutePath() + File.separator + "system\\python_stubs");
-                paths_to_pycharm.add(py_charm_dir.getAbsolutePath());
+        for (File pyCharmDir : pyCharmDirs)
+            if (pyCharmDir.isDirectory()) {
+                pathsToStubs.add(pyCharmDir.getAbsolutePath() + File.separator + "system\\python_stubs");
+                pathsToPycharm.add(pyCharmDir.getAbsolutePath());
             }
 
-        Vector<String> skeletons_paths_generated_by_regex;
-        Vector<String> skeletons_paths_generated_by_dir_count = getGeneratedSkeletonsPathByDirCount(paths_to_stubs);
+        Vector<String> skeletonsPathsGeneratedByRegex;
+        Vector<String> generatedSkeletonsPathByDirCount = getGeneratedSkeletonsPathByDirCount(pathsToStubs);
         try {
-            skeletons_paths_generated_by_regex = getGeneratedSkeletonsPathByRegex(paths_to_pycharm);
+            skeletonsPathsGeneratedByRegex = getGeneratedSkeletonsPathByRegex(pathsToPycharm);
         } catch (IOException e) {
-            skeletons_paths_generated_by_regex = null;
+            skeletonsPathsGeneratedByRegex = null;
         }
-        return unionVectors(skeletons_paths_generated_by_regex, skeletons_paths_generated_by_dir_count);
+        return unionVectors(skeletonsPathsGeneratedByRegex, generatedSkeletonsPathByDirCount);
     }
 
-    private void copy_contents_when_done(String skeleton_path) throws Exception {
-        String full_path_custom_skeletons = m_path_for_skeleton_to_copy + "\\Python\\ResultFiles";
-        String path_to_script = m_path_for_skeleton_to_copy + "\\Python\\Parsers";
-        File sourceDirectory = new File(full_path_custom_skeletons);
+    private void copyContentsWhenDone(String skeleton_path) throws Exception {
+        String fullPathCustomSkeletons = m_path_for_skeleton_to_copy + "\\Python\\ResultFiles";
+        String pathToScript = m_path_for_skeleton_to_copy + "\\Python\\Parsers";
+        File sourceDirectory = new File(fullPathCustomSkeletons);
         File destinationDirectory = new File(skeleton_path);
-        File script_file = new File(path_to_script);
-        if (!script_file.isDirectory()) {
+        File scriptFile = new File(pathToScript);
+        if (!scriptFile.isDirectory()) {
             throw new Exception(String.format("Invalid directory  - %s", m_path_for_skeleton_to_copy));
         }
-        runCmdCommand("python ClassParser.py", new File(path_to_script));
+        runCmdCommand("python ClassParser.py", new File(pathToScript));
         if (!sourceDirectory.isDirectory()) {
             throw new Exception("Parsing script failed to generate ResultFiles folder");
         }
-        runCmdCommand(String.format("xcopy %s %s /E", sourceDirectory, destinationDirectory), null);
+        runCmdCommand(String.format("xcopy %s %s /E /Y", sourceDirectory, destinationDirectory), null);
     }
 
-    private void runnable_function(Project proj, List<Sdk> sdk_list) throws Exception {
-        Vector<String> all_skeleton_paths = getGeneratedSkeletonsPath();
-        if (all_skeleton_paths == null)
+    private void runnableFunction(Project proj, List<Sdk> sdkList) throws Exception {
+        Vector<String> allSkeletonPaths = getGeneratedSkeletonsPath();
+        if (allSkeletonPaths == null)
             throw new Exception("Failed to locate any skeleton paths (consider re-regenerating and retry");
-        for (Sdk sdk : sdk_list) {
-            for (String skeletons_path : all_skeleton_paths) {
+        for (Sdk sdk : sdkList) {
+            copyPydToSitePackagesDir(sdk);
+            for (String skeletonsPath : allSkeletonPaths) {
                 try {
-                    PySkeletonRefresher.refreshSkeletonsOfSdk(proj, null, skeletons_path, sdk);
-                    copy_contents_when_done(skeletons_path);
+                    PySkeletonRefresher.refreshSkeletonsOfSdk(proj, null, skeletonsPath, sdk);
+                    copyContentsWhenDone(skeletonsPath);
                 } catch (InvalidSdkException e) {
                     throw new Exception("Skeleton refresh failed! (Invalid SDK)");
                 }
@@ -166,36 +175,33 @@ public class SkeletonRefresher extends AnAction {
     }
 
     @Override
-    public void update(AnActionEvent e) {
-        synchronized (sync_object) {
-            e.getPresentation().setEnabled(!is_generating);
+    public void update(@NotNull AnActionEvent e) {
+        synchronized (SYNC_OBJECT) {
+            e.getPresentation().setEnabled(!isGenerating);
         }
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
         Project project = anActionEvent.getDataContext().getData(PlatformDataKeys.PROJECT);
-        List<Sdk> all_sdks = PythonSdkType.getAllSdks();
-        ApplicationManager.getApplication().executeOnPooledThread(new Runnable() {
-            @Override
-            public void run() {
-                synchronized (sync_object) {
-                    is_generating = true;
-                }
-                try {
-                    runnable_function(project, all_sdks);
-                    Notification notification = new Notification("RE", "RE", "Success: files for auto-completion copied", NotificationType.INFORMATION);
-                    Notifications.Bus.notify(notification);
-                } catch (Exception e) {
-                    Notification notification = new Notification("RE", "RE - Skeleton Generator ERROR", e.getMessage(), NotificationType.ERROR);
-                    Notifications.Bus.notify(notification);
-                } finally {
-                    synchronized (sync_object) {
-                        is_generating = false;
-                    }
-                }
-
+        List<Sdk> allSdks = PythonSdkType.getAllSdks();
+        ApplicationManager.getApplication().executeOnPooledThread(() -> {
+            synchronized (SYNC_OBJECT) {
+                isGenerating = true;
             }
+            try {
+                runnableFunction(project, allSdks);
+                Notification notification = new Notification("RE", "RE", "Success: python-dds library is now available", NotificationType.INFORMATION);
+                Notifications.Bus.notify(notification);
+            } catch (Exception e) {
+                Notification notification = new Notification("RE", "RE - Skeleton Generator ERROR", e.getMessage(), NotificationType.ERROR);
+                Notifications.Bus.notify(notification);
+            } finally {
+                synchronized (SYNC_OBJECT) {
+                    isGenerating = false;
+                }
+            }
+
         });
     }
 }
