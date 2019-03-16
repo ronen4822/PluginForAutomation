@@ -5,6 +5,9 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -29,6 +32,7 @@ public class SkeletonRefresher extends AnAction {
     private static String m_path_for_skeleton_to_copy = "C:\\git\\PythonDdsWrapper";
     static Boolean isGenerating = false;
     static final Object SYNC_OBJECT = new Object();
+    private final double INDICATOR_PROGRESSION_AMOUNT = 0.3333;
 
     public SkeletonRefresher() {
         super("SkeletonRefresher");
@@ -72,7 +76,7 @@ public class SkeletonRefresher extends AnAction {
             Matcher matches = ptrn.matcher(current_string);
             if (matches.find() && matches.groupCount() == 1) {
                 String currentMatch = path + matches.group(1);
-                skeletonPaths.add(currentMatch.replace('/','\\'));
+                skeletonPaths.add(currentMatch.replace('/', '\\'));
             }
         }
         return skeletonPaths;
@@ -107,13 +111,13 @@ public class SkeletonRefresher extends AnAction {
     private void copyPydToSitePackagesDir(Sdk currentSdk) throws Exception {
         VirtualFile sdkHome = currentSdk.getHomeDirectory();
         if (sdkHome == null)
-            throw new Exception(String.format("Failed to locate sdk home dir : %s",currentSdk.getName()));
-        File sitePackagesFile=new File(sdkHome.getParent().getPath() + "\\Lib\\site-packages");
+            throw new Exception(String.format("Failed to locate sdk home dir : %s", currentSdk.getName()));
+        File sitePackagesFile = new File(sdkHome.getParent().getPath() + "\\Lib\\site-packages");
         File pathOfPyd = new File(m_path_for_skeleton_to_copy + "\\CompiledFiles\\Pyd");
         if (!sitePackagesFile.exists())
-            throw new Exception(String.format("Cannot find dir: %s",sitePackagesFile.getAbsolutePath()));
+            throw new Exception(String.format("Cannot find dir: %s", sitePackagesFile.getAbsolutePath()));
         if (!pathOfPyd.exists())
-            throw new Exception(String.format("Cannot find dir %s",pathOfPyd.getAbsolutePath()));
+            throw new Exception(String.format("Cannot find dir %s", pathOfPyd.getAbsolutePath()));
         runCmdCommand(String.format("xcopy %s %s /E /Y", pathOfPyd.getAbsolutePath(), sitePackagesFile.getAbsolutePath()), null);
     }
 
@@ -157,21 +161,32 @@ public class SkeletonRefresher extends AnAction {
         runCmdCommand(String.format("xcopy %s %s /E /Y", sourceDirectory, destinationDirectory), null);
     }
 
-    private void runnableFunction(Project proj, List<Sdk> sdkList) throws Exception {
+    private void runnableFunction(ProgressIndicator indicator, Project proj, List<Sdk> sdkList) throws Exception {
         Vector<String> allSkeletonPaths = getGeneratedSkeletonsPath();
+        indicator.setFraction(0);
         if (allSkeletonPaths == null)
             throw new Exception("Failed to locate any skeleton paths (consider re-regenerating and retry");
+        int totalNumOfSdks = sdkList.size();
+        int totalNumOfSkeletons = allSkeletonPaths.size();
         for (Sdk sdk : sdkList) {
+            indicator.setText(String.format("Copying pyd to sdk %s", sdk.getHomeDirectory()));
             copyPydToSitePackagesDir(sdk);
+            indicator.setFraction(indicator.getFraction() + (INDICATOR_PROGRESSION_AMOUNT / totalNumOfSdks));
             for (String skeletonsPath : allSkeletonPaths) {
                 try {
+                    indicator.setText(String.format("Refreshing skeletons for skeleton path %s", skeletonsPath));
                     PySkeletonRefresher.refreshSkeletonsOfSdk(proj, null, skeletonsPath, sdk);
+                    indicator.setText("Copying custom skeletons");
+                    indicator.setFraction(indicator.getFraction() + (INDICATOR_PROGRESSION_AMOUNT / (totalNumOfSdks * totalNumOfSkeletons)));
                     copyContentsWhenDone(skeletonsPath);
+                    indicator.setText("Finished updating skeleton");
+                    indicator.setFraction(indicator.getFraction() + (INDICATOR_PROGRESSION_AMOUNT / (totalNumOfSdks * totalNumOfSkeletons)));
                 } catch (InvalidSdkException e) {
                     throw new Exception("Skeleton refresh failed! (Invalid SDK)");
                 }
             }
         }
+        indicator.setFraction(1);
     }
 
     @Override
@@ -185,20 +200,22 @@ public class SkeletonRefresher extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
         Project project = anActionEvent.getDataContext().getData(PlatformDataKeys.PROJECT);
         List<Sdk> allSdks = PythonSdkType.getAllSdks();
-        ApplicationManager.getApplication().executeOnPooledThread(() -> {
-            synchronized (SYNC_OBJECT) {
-                isGenerating = true;
-            }
-            try {
-                runnableFunction(project, allSdks);
-                Notification notification = new Notification("RE", "RE", "Success: python-dds library is now available", NotificationType.INFORMATION);
-                Notifications.Bus.notify(notification);
-            } catch (Exception e) {
-                Notification notification = new Notification("RE", "RE - Skeleton Generator ERROR", e.getMessage(), NotificationType.ERROR);
-                Notifications.Bus.notify(notification);
-            } finally {
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, "RE - Skeleton Generation") {
+            public void run(@NotNull ProgressIndicator indicator) {
                 synchronized (SYNC_OBJECT) {
-                    isGenerating = false;
+                    isGenerating = true;
+                }
+                try {
+                    runnableFunction(indicator, project, allSdks);
+                    Notification notification = new Notification("RE", "RE", "Success: python-dds library is now available", NotificationType.INFORMATION);
+                    Notifications.Bus.notify(notification);
+                } catch (Exception e) {
+                    Notification notification = new Notification("RE", "RE - Skeleton Generator ERROR", e.getMessage(), NotificationType.ERROR);
+                    Notifications.Bus.notify(notification);
+                } finally {
+                    synchronized (SYNC_OBJECT) {
+                        isGenerating = false;
+                    }
                 }
             }
 
